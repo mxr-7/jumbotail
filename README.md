@@ -20,8 +20,8 @@ docker run -itd jenkins-standalone-agent
 To run the Jenkins agent with parameters, use the following command:
 ```bash
 docker run -d -e JENKINS_AGENT_NAME=my-agent
--e JENKINS_URL=http://<your-jenkins-master>:8080/
--e JENKINS_SECRET=<agent-secret>
+-e JENKINS_URL=http://$(Jenkins-master-IP):8080/
+-e JENKINS_SECRET=$(agent-secret)
 -e JENKINS_AGENT_WORKDIR=/home/jenkins/agent
 Jenkins-agent-image
 ```
