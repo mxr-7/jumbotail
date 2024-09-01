@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    environment {
+        REGISTRY = "https://gcr.io/v1/"
+        REPO = "jenkins-agent-standalone"
+        DOCKER_CREDENTIALS_ID = "mohitraj7050"
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/your-repo.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${REGISTRY}/${REPO}:${env.BUILD_ID}")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry("https://${REGISTRY}", DOCKER_CREDENTIALS_ID) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+
+        stage('Clean Up') {
+            steps {
+                script {
+                    dockerImage.remove()
+                }
+            }
+        }
+    }
+}
+

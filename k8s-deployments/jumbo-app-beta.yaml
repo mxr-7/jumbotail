@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jumbo-backend-beta
+  labels:
+    app: jumbo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jumbo
+      version: beta
+  template:
+    metadata:
+      labels:
+        app: jumbo
+        version: beta
+    spec:
+      containers:
+      - name: jumbo-beta
+        image: jumbotail_backend:1.0-beta
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      volumes:
+      - name: config-volume
+        configMap:
+          name: backend-env-config
+
